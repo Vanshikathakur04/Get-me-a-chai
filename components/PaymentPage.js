@@ -6,7 +6,9 @@ import { fetchuser, fetchpayments, initiate } from '@/actions/useractions';
 import { useSearchParams } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import { Bounce } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
+import { notFound } from 'next/navigation'
+
 
 const PaymentPage = ({ username }) => {
     const [paymentform, setPaymentForm] = useState({ name: "",message: "",amount: "" }) 
@@ -50,7 +52,6 @@ const PaymentPage = ({ username }) => {
       setcurrentUser(u)
       let dbpayments = await fetchpayments(username)
       setPayments(dbpayments)
-      console.log(currentUser, dbpayments)
     }
 
   const pay = async (amount) => {
@@ -99,30 +100,30 @@ const PaymentPage = ({ username }) => {
 
       <div className="cover w-full bg-red-50 relative">
         <img
-          className="object-center w-full h-[350px]"
-          src={currentUser.coverpic}
+          className="object-cover w-full h-48 md:h-[350px] shadow-blue-700 shadow-sm"
+          src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/4842667/452146dcfeb04f38853368f554aadde1/eyJ3IjoxNjAwLCJ3ZSI6MX0%3D/18.gif?token-time=1746316800&token-hash=KTX6bXq0mcJlkqIMWeAGjBsgMV09g303gTUFhCJyk2I%3D"
           alt=""
         />
-        <div className="absolute -bottom-20 right-[46%] border-white overflow-hidden border-2 rounded-full size-28">
+        <div className="absolute -bottom-20 right-[38%] md:right-[46%] border-white overflow-hidden border-2 rounded-full size-36">
           <img
-            className="rounded-full object-cover size-28"
+            className="rounded-full object-cover size-36"
             width={128}
             height={128}
-            src={currentUser.profilepic}
+            src="https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg"
             alt=""
           />
         </div>
       </div>
       <div className="info flex justify-center items-center my-24 flex-col gap-2">
         <div className="font-bold text-lg">@{username}</div>
-        <div className="text-slate-400">Creating Animated art for VTT's</div>
+        <div className="text-slate-400">Lets help {username} get a chai!</div>
         <div className="text-slate-400">
-          17,408 members. 97 posts. $17,160/release
+         {payments?.length} Payments. ₹{payments?.reduce((a, b) => a + b.amount, 0)} raised
         </div>
 
-        <div className="payment flex gap-3 w-[80%] mt-11">
-          <div className="supporters w-1/2 bg-slate-900 rounded-lg text-white p-10">
-            <h2 className="text-2xl font-bold my-5">Suppoters</h2>
+        <div className="payment flex gap-3 w-[80%] mt-11 flex-col md:flex-row">
+          <div className="supporters w-full md:w-1/2 bg-slate-900 rounded-lg text-white p-10">
+            <h2 className="text-2xl font-bold my-5">Top 10 Suppoters</h2>
             <ul className="mx-5 text-lg">
               {payments?.length == 0 && <li>No payments yet</li> }
               {payments?.map((p, i) =>{
@@ -137,7 +138,7 @@ const PaymentPage = ({ username }) => {
             </ul>
           </div>
 
-          <div className="makePayment w-1/2 bg-slate-900 rounded-lg text-white p-10">
+          <div className="makePayment w-full md:w-1/2 bg-slate-900 rounded-lg text-white p-10">
             <h2 className="text-2xl font-bold my-5">Make a Payment</h2>
             <div className="flex gap-2 flex-col">
               <div>
@@ -159,13 +160,13 @@ const PaymentPage = ({ username }) => {
               />
               <button onClick={()=> pay(Number.parseInt(paymentform.amount)*100)}
                 type="button"
-                className="text-white bg-gradient-to-br from-purple-900 to-blue-900 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled:bg-slate-600 disabled:from-purple-100" disabled={paymentform.name?.length < 3 || paymentform.message?.length < 4}
+                className="text-white bg-gradient-to-br from-purple-900 to-blue-900 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 disabled:bg-slate-600 disabled:from-purple-100" disabled={paymentform.name?.length < 3 || paymentform.message?.length < 4 || paymentform.amount?.length < 1 }
               >
                 Pay
               </button>
             </div>
 
-            <div className="flex gap-2 mt-5">
+            <div className="flex flex-col md:flex-row gap-2 mt-5">
               <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(1000)}>Pay ₹10</button>
               <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(2000)}>Pay ₹20</button>
               <button className="bg-slate-800 p-3 rounded-lg" onClick={()=> pay(3000)}>Pay ₹30</button>
